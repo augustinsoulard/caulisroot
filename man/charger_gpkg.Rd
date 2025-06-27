@@ -4,10 +4,12 @@
 \alias{charger_gpkg}
 \title{charger_gpkg}
 \usage{
-charger_gpkg(layers = NULL)
+charger_gpkg(layers = NULL, path = NULL)
 }
 \arguments{
 \item{layers}{Liste de layer du geopackage}
+
+\item{path}{chemin vers le fichier (choix de fichier si pas de chemin)}
 }
 \value{
 Un ou plusieurs objets `sf` nommés comme les couches importées

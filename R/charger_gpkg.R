@@ -1,19 +1,24 @@
 #' @title charger_gpkg
 #' @description Fonction permettant de charger rapidement les couches contenu dans un geopackage
 #' @param layers Liste de layer du geopackage
+#' @param path chemin vers le fichier (choix de fichier si pas de chemin)
 #' @return Un ou plusieurs objets `sf` nommés comme les couches importées
 #' @examples charger_gpkg(layers = c('Flore','Releve_Phyto'))
 #' @export
 
-charger_gpkg <- function(layers = NULL) {
+charger_gpkg <- function(layers = NULL,path=NULL) {
   if(!require("sf")){install.packages("sf")} ; library("sf")
   if(!require("tcltk")){install.packages("tcltk")} ; library("tcltk")
 
   # Choix du fichier GeoPackage
-  fichier <- tk_choose.files(
-    caption = "Choisir un fichier GeoPackage",
-    filter = matrix(c("GeoPackage", "*.gpkg"), ncol = 2, byrow = TRUE)
-  )
+  if(is.null(path)){
+    fichier <- tk_choose.files(
+      caption = "Choisir un fichier GeoPackage",
+      filter = matrix(c("GeoPackage", "*.gpkg"), ncol = 2, byrow = TRUE)
+    )
+  } else{
+    fichier = path
+  }
 
   if (length(fichier) == 0 || fichier == "") {
     message("Aucun fichier sélectionné.")
@@ -46,3 +51,4 @@ charger_gpkg <- function(layers = NULL) {
 
   invisible(resultats)
 }
+
