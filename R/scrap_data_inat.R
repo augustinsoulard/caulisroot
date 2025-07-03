@@ -5,7 +5,7 @@
 #' @param maxresult Résultats maximum pour la requêtes INaturalist
 #' @param filter_user_login nom d'utilisateur si filtrer par utilisateur
 #' @return Pas le plus important, mais returne les tableaux injectés dans postgreSQL
-#' @examples scrap_data_inat(requete="SELECT * FROM projet.zone_etude WHERE code IN (27);",year=NULL,maxresult=900,filter_user_login = "augustinsoulard")
+#' @examples scrap_data_inat(requete="SELECT * FROM projet.zone_etude WHERE code IN (27,29);",year=NULL,maxresult=900,filter_user_login = "augustinsoulard")
 
 #' @export
 ####Function
@@ -57,7 +57,18 @@ scrap_data_inat = function(requete=NULL,
                                code_taxa_entree = unknow_taxa$taxon_id,
                                ref ='taxref',
                                input_ref="inaturalist")
-    write_to_schema(con, "inaturalist", "corresp_taxref", new_corresp, append = TRUE)
+
+    #Ajout des bon lb_nom TAXREF
+    taxref = dbGetQuery(con, "SELECT lb_nom,cd_ref FROM public.taxrefv18_fr_plantae_ref")
+    new_corresp = left_join(new_corresp,taxref,by="cd_ref")
+    new_corresp <- new_corresp %>%
+      rename(
+        lb_nom_syn = lb_nom.x,
+        lb_nom_valide = lb_nom.y
+      )
+
+    # Ecrire sur la base de données
+    write_to_schema(con, "inaturalist", "corresp_taxref", new_corresp, append = TRUE, overwrite = FALSE)
     cat("De nouvelles correspondances existent vérifier manuellement dans BiodiversitySQL")
     return(new_corresp)
     stop("De nouvelles correspondances existent vérifier manuellement dans BiodiversitySQL")
@@ -71,16 +82,13 @@ scrap_data_inat = function(requete=NULL,
     write_to_schema(con, "inaturalist", "augustinsoulard", obs_to_add, append = TRUE)
     cat("Données Inaturalist sauvegardée sur BiodiversitySQL")
   }
-
+  obs$taxon_id = as.character(obs$taxon_id )
   obs = left_join(obs,corresp_know,by=c("taxon_id"="code_taxa_entree"))
-  obs = obs %>% select(-lb_nom)
-  #Ajout des bon lb_nom
-  taxref = dbGetQuery(con, "SELECT lb_nom,cd_ref FROM public.taxrefv18_fr_plantae_ref")
-  obs = left_join(obs,taxref,by="cd_ref")
+
   # Étape 1 : renommer les colonnes
   obs_renamed <- obs %>%
     rename(
-      Nom = lb_nom,
+      Nom = lb_nom_valide,
       Date = datetime,
       latitude = latitude,
       longitude = longitude,
