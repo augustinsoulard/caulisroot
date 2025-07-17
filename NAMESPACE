@@ -2,4 +2,9 @@
 
 export(charger_gpkg)
 export(scrap_data_inat)
+export(trigrammisation)
 export(write_to_schema)
+importFrom(dplyr,rename)
+importFrom(stringr,str_detect)
+importFrom(stringr,str_locate)
+importFrom(stringr,str_split)

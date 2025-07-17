@@ -27,5 +27,5 @@ Pas le plus important, mais returne les tableaux injectés dans postgreSQL
 Récupère les données Inaturalist et les injectes dans la BDD
 }
 \examples{
-scrap_data_inat(requete="SELECT * FROM projet.zone_etude WHERE code IN (27);",year=NULL,maxresult=900,filter_user_login = "augustinsoulard")
+scrap_data_inat(requete="SELECT * FROM projet.zone_etude WHERE code IN (27,29);",year=NULL,maxresult=900,filter_user_login = "augustinsoulard")
 }
