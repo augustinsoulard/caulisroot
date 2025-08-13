@@ -17,4 +17,5 @@ La fonction suppose que le fichier `.Renviron` contient les variables d’enviro
 }
 \examples{
 con = copo()
+BDC_STATUTS <-   dbGetQuery(con, "SELECT * FROM public.bdc_statuts_18")
 }

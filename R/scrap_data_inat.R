@@ -6,18 +6,24 @@
 #' @param filter_user_login nom d'utilisateur si filtrer par utilisateur
 #' @return Pas le plus important, mais returne les tableaux injectés dans postgreSQL
 #' @examples scrap_data_inat(requete="SELECT * FROM projet.zone_etude WHERE code IN (27,29);",year=NULL,maxresult=900,filter_user_login = "augustinsoulard")
-
+#' @import sf
+#' @import leaflet
+#' @import rinat
+#' @import dplyr
+#'
+#' @encoding UTF-8
 #' @export
-####Function
+
 scrap_data_inat = function(requete=NULL,
                            year=NULL,
                            maxresult=10000,
                            filter_user_login = NULL){
 
   # Chargement des packages ####
-  if(!require("sf")){install.packages("sf")} ; library("sf")
-  if(!require("leaflet")){install.packages("leaflet")} ; library("leaflet")
-  if(!require("rinat")){install.packages("rinat")} ; library("rinat")
+  library(dplyr)
+  library(sf)
+  library(leaflet)
+  library(rinat)
   if(!require("rtaxref")){install_github("Rekyt/rtaxref")} ; library("rtaxref")
   source("function/taxabase.R")
   source("function/postgres/postgres_manip.R")
@@ -40,6 +46,13 @@ scrap_data_inat = function(requete=NULL,
   if(!is.null(filter_user_login)){
     obs = obs %>% filter(user_login==filter_user_login)
   }
+
+  ### Mettre les données privées en claires ####
+  obs <- obs %>%
+    mutate(latitude = if_else(!is.na(private_latitude), private_latitude, latitude),
+           longitude = if_else(!is.na(private_longitude), private_longitude, longitude)
+           )
+
   # Tester de voir si la base de données connait les codes taxon INaturalist ####
 
   corresp_know = dbGetQuery(con, "SELECT * FROM inaturalist.corresp_taxref")
@@ -76,20 +89,36 @@ scrap_data_inat = function(requete=NULL,
   }
 
   inat_augustinsoulard = dbGetQuery(con, "SELECT * FROM inaturalist.augustinsoulard")
-  obs_to_add <- obs %>%
-    filter(!id %in% inat_augustinsoulard$id)
+
+
+  if(!is.null(requete)){
+    obs_to_add <- obs %>%
+      filter(!id %in% inat_augustinsoulard$id)
+  }else{
+    obs_to_add <- obs %>%
+      filter(!id %in% inat_augustinsoulard$id) %>%
+      select(scientific_name,datetime=observed_on,description,place_guess,latitude,longitude,tag_list,common_name,url,
+             image_url,user_login,id,species_guess,iconic_taxon_name,taxon_id,num_identification_disagreements,observed_on_string,observed_on,
+             time_observed_at,time_zone,positional_accuracy,public_positional_accuracy,geoprivacy,taxon_geoprivacy,coordinates_obscured,positioning_method,
+             positioning_device,user_id,user_name,created_at, updated_at,quality_grade,license,oauth_application_id,captive_cultivated,uuid)
+      }
+
+
+
+
   if(nrow(obs_to_add)>0){
     write_to_schema(con, "inaturalist", "augustinsoulard", obs_to_add, append = TRUE)
-    cat("Données Inaturalist sauvegardée sur BiodiversitySQL")
+    print("Données Inaturalist sauvegardée sur BiodiversitySQL : ")
+    print(obs_to_add)
   }
-  obs$taxon_id = as.character(obs$taxon_id )
+  obs$taxon_id = as.character(obs$taxon_id)
   obs = left_join(obs,corresp_know,by=c("taxon_id"="code_taxa_entree"))
 
   # Étape 1 : renommer les colonnes
   obs_renamed <- obs %>%
     rename(
       Nom = lb_nom_valide,
-      Date = datetime,
+      Date = observed_on,
       latitude = latitude,
       longitude = longitude,
       Commentaire = url,

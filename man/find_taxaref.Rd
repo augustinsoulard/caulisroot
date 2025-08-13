@@ -21,7 +21,7 @@ find_taxaref(
 \item{input_ref}{Character. Source des noms d'entrée ("inaturalist", "baseflor", etc.), utilisé pour ajuster la correspondance (défaut : "inaturalist").}
 }
 \value{
-Un data.frame avec, pour chaque taxon d'entrée : le code d'entrée, le libellé nettoyé,
+Un data.frame avec, pour chaque taxon d'entrée : le code d'entrée, le libellé nettoyé,
 le rang, les codes et noms correspondants dans TAXREF (ou référentiel choisi), et le code cd_ref mis à jour.
 }
 \description{
@@ -33,11 +33,15 @@ puis associe les codes et rangs correspondants depuis le référentiel.
 La fonction effectue des opérations de nettoyage sur les noms de taxons,
 corrige certains formats (ex. ssp. → subsp.), supprime les parenthèses et mots parasites,
 détermine le rang (espèce, sous-espèce, variété…), puis cherche la correspondance exacte dans le référentiel taxonomique choisi.
-La connexion à la base de données BiodiversitySQL est requise
 }
 \examples{
-find_taxaref(data$scientificname,
-code_taxa_entree = data$code_taxa,
-ref='taxref',
-input_ref="inaturalist")
+\dontrun{
+find_taxaref(
+  lb_taxa_entree = c("Ranunculus aquatilis subsp. aquatilis", "Centaurea jacea"),
+  code_taxa_entree = c(NA, NA),
+  ref = "taxref",
+  input_ref = "inaturalist"
+)
+}
+
 }

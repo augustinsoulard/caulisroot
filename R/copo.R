@@ -4,6 +4,7 @@
 #' @details La fonction suppose que le fichier `.Renviron` contient les variables d’environnement `PGUSER` et `PGPASSWORD`, et que la base `BiodiversitySQL` est accessible.
 #' @examples
 #' con = copo()
+#' BDC_STATUTS <-   dbGetQuery(con, "SELECT * FROM public.bdc_statuts_18")
 #' @export
 
 
