@@ -20,7 +20,7 @@
 #'
 #' @return `list(plots = <liste nommée de ggplot par espèce>, files = <chemins des PNG exportés si export = TRUE>)`
 #' @import sf ggplot2 ggspatial dplyr rlang
-#'
+#' @export
 atlas_grid_map_for_spsheet <- function(
     atlas_polys,
     lb_nom,

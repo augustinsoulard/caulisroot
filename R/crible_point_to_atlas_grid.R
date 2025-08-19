@@ -32,6 +32,7 @@
 #' - La jointure spatiale utilise `st_within` (un point compte pour la cellule dans laquelle il tombe).
 #'
 #' @import sf dplyr rlang
+#' @export
 
 
 crible_point_to_atlas_grid <- function(point_data,
