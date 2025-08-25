@@ -8,6 +8,7 @@
 #' @param code_taxa_entree Vector (optionnel). Codes des taxons d'entrée, si disponibles (défaut : NA).
 #' @param ref Character. Référentiel de correspondance, par défaut "taxref".
 #' @param input_ref Character. Source des noms d'entrée ("inaturalist", "baseflor", etc.), utilisé pour ajuster la correspondance (défaut : "inaturalist").
+#' @param taxagroup Character. Sourcer des noms d'entrée ("flore", "faune" ou fonge), utilisé pour ajuster la correspondance au bon groupe taxonomique (défaut : "flore").
 #'
 #' @return Un data.frame avec, pour chaque taxon d'entrée : le code d'entrée, le libellé nettoyé,
 #' le rang, les codes et noms correspondants dans TAXREF (ou référentiel choisi), et le code cd_ref mis à jour.
@@ -23,10 +24,17 @@
 #'   lb_taxa_entree = c("Ranunculus aquatilis subsp. aquatilis", "Centaurea jacea"),
 #'   code_taxa_entree = c(NA, NA),
 #'   ref = "taxref",
-#'   input_ref = "inaturalist"
+#'   input_ref = "inaturalist",
+#'   taxagroup = "flore"
 #' )
 #' }
+#'#' @author Augustin (package QBiome)
+#' @keywords taxref inaturalist faune flore cd_nom cd_ref
 #'
+#' @import dplyr
+#' @import stringr
+#'
+#' @encoding UTF-8
 #' @export
 
 
@@ -35,12 +43,19 @@ find_taxaref <- function(
     lb_taxa_entree,
     code_taxa_entree = NA,
     ref='taxref',
-    input_ref="inaturalist"
+    input_ref="inaturalist",
+    taxagroup = "flore"
 ){
+  # Chargement des librairies
+  library(dplyr)
+  library(stringr)
+
   entree = data.frame(code_taxa_entree = code_taxa_entree,lb_taxa_entree = lb_taxa_entree)
 
-  if(ref == 'taxref'){
+  if(ref == 'taxref' & taxagroup =="flore"){
     taxref = dbGetQuery(con, "SELECT * FROM public.taxref_flore_fr_syn")
+  } else if(ref == 'taxref' & taxagroup =="faune"){
+    taxref =dbGetQuery(con, "SELECT * FROM public.taxrefv18 WHERE regne = 'Animalia'")
   }
 
   #Préparation du tableau entree
@@ -140,7 +155,7 @@ find_taxaref <- function(
 
   }
   #Mise à jour du code CD_REF
-  entree$cd_ref = updatetaxa(entree$cd_nom)
+  entree$cd_ref = updatetaxa(entree$cd_nom,taxagroup = "faune")
 
   return(entree)
 }
