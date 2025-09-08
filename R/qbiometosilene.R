@@ -110,7 +110,7 @@ qbiometosilene = function(donnees_path = file.choose(),
 
   ##Chargement des données
   data_qbiome = st_read(donnees_path, layer = "Flore")
-  typologie = st_read(donnees_path, layer = "Typologie") # A paramétrer
+  # typologie = st_read(donnees_path, layer = "Typologie") # A paramétrer
 
   ## Préparation du tableau ####
   standard_silene = standard_silene[rep(1, nrow(data_qbiome)),]
@@ -182,7 +182,7 @@ qbiometosilene = function(donnees_path = file.choose(),
   standard_silene$`Effectif min` = data_qbiome$Nombre
 
   ## Précision Nombre ####
-  standard_silene$`Précision effectif` = data_qbiome$Precision
+ standard_silene$`Précision effectif` = data_qbiome$Denombrement
 
 
 ## Remarques ####
