@@ -1,12 +1,22 @@
 Package: caulisroot
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.2.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Les racines de l'outil Caulis
+Version: 0.3.0
+Author: Augustin Soulard
+Maintainer: Augustin Soulard <augustin.soulard@synetea.fr>
+Description: Ce package fournit des outils d'appui pour la gestion et l'analyse de données écologiques et phytosociologiques, notamment pour les projets liés à la base de scripts Caulis. Il inclut des fonctions pour la manipulation de données spatiales, l'analyse d'habitats naturels, et la génération de rapports automatisés en écologie.
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
+License: CC-BY-4.0
+Imports:
+    DBI,
+    dplyr,
+    ggplot2,
+    ggspatial,
+    leaflet,
+    rinat,
+    rlang,
+    sf,
+    stringr,
+    tidyr

@@ -8,8 +8,9 @@ roxygen2::roxygenise()
 
 
 # (Re)génère la doc et installe ton package ####
-devtools::document()
 devtools::install(dependencies = TRUE, force = TRUE)
+devtools::document()  # pour régénérer la documentation
+devtools::build()     # pour construire le package
 # puis si tu veux tester
 devtools::load_all()
 
@@ -31,3 +32,13 @@ sf::sf_extSoftVersion()
 
 # Fige l’état de l’env
 renv::snapshot()
+
+
+#############Nettoyage après corrumtion
+devtools::clean_dll()  # Nettoie les DLLs compilées
+devtools::clean_vignettes()  # Nettoie les vignettes
+devtools::clean_source_pkg()  # Nettoie les sources
+remove.packages("caulisroot")
+
+
+

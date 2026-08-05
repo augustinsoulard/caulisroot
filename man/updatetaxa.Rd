@@ -4,10 +4,12 @@
 \alias{updatetaxa}
 \title{updatetaxa}
 \usage{
-updatetaxa(liste_cd_nom)
+updatetaxa(liste_cd_nom, taxagroup = "flore")
 }
 \arguments{
 \item{liste_cd_nom}{Vector (ou data.frame convertible en vector). Liste des codes CD_NOM à convertir.}
+
+\item{taxagroup}{Character. Sourcer des noms d'entrée ("flore", "faune" ou fonge), utilisé pour ajuster la correspondance au bon groupe taxonomique (défaut : "flore").}
 }
 \value{
 Vector. Liste des codes CD_REF correspondants (NA si aucun match trouvé).
@@ -22,5 +24,5 @@ le CD_REF associé. La connexion à la base de données PostgreSQL (objet `con`)
 doit être disponible dans l'environnement global.
 }
 \examples{
-updatetaxa(data$cd_nom)
+updatetaxa(data$cd_nom,taxagroup = "flore")
 }

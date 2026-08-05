@@ -12,7 +12,7 @@ copo = function(){ #COnnexion à la bdd POstgres
   # Préparation de la BDD ####
   ### Déclaraiton des variables d'environnement pour l'authentification ####
   if (file.exists("D:/Logiciel/R/.Renviron")) {
-    Sys.setenv(R_ENVIRON = "G:/Mon Drive/Administratif/hz/.Renviron")
+    Sys.setenv(R_ENVIRON = "I:/Mon Drive/A_PERSO/Administratif/hz/.Renviron")
     readRenviron(Sys.getenv("R_ENVIRON"))
   } else {
     stop("Le fichier .Renviron n'existe pas ou n'est pas accessible.")
